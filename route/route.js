@@ -4,5 +4,5 @@ module.exports = (app) => {
 
 
     // Create a new Note
-    app.put('/updateMany', Student.updateMany);
+    app.delete('/delete/:id', Student.delete);
 }
