@@ -1,7 +1,7 @@
 const Student=require('../model/student')
 
 exports.delete = (req, res) => {
-    Student.findByIdAndRemove(req.params.id)
+    Student.remove()
     .then(student => {
         if(!student) {
             return res.status(404).send({

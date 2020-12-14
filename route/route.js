@@ -4,5 +4,5 @@ module.exports = (app) => {
 
 
     // Create a new Note
-    app.delete('/delete/:id', Student.delete);
+    app.delete('/delete', Student.delete);
 }
