@@ -1,7 +1,7 @@
 const Student=require('../model/student')
 
-exports.create = (req, res) => {
-    Student.insertMany(req.body)
+exports.get = (req, res) => {
+    Student.findOne()
 
     .then(data => {
         console.log(data)
