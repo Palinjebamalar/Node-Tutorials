@@ -1,7 +1,7 @@
 const Student=require('../model/student')
 
-exports.get = (req, res) => {
-    Student.findOne()
+exports.getAll = (req, res) => {
+    Student.find()
 
     .then(data => {
         console.log(data)

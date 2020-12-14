@@ -2,5 +2,5 @@ module.exports = (app) => {
     const Student = require('../controller/studentController');
 
     // Create a new Note
-    app.get('/get', Student.get);
+    app.get('/getAll', Student.getAll);
 }
