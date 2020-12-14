@@ -1,6 +1,8 @@
 module.exports = (app) => {
+
     const Student = require('../controller/studentController');
 
+
     // Create a new Note
-    app.get('/get', Student.get);
+    app.put('/update/:id', Student.update);
 }

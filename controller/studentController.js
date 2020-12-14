@@ -1,14 +1,30 @@
 const Student=require('../model/student')
 
-exports.get = (req, res) => {
-    Student.findOne()
+exports.update = (req, res) => {
+    // Validate Request
+    if(!req.body.name) {
+        return res.status(400).send({
+            message: "Name Required"
+        });
+    }
 
-    .then(data => {
-        console.log(data)
-        res.send(data);
+    // Find note and update it with the request body
+    Student.updateOne({_id:req.params.id}, { name:req.body.name,class:req.body.class})
+    .then(student => {
+        if(!student) {
+            return res.status(404).send({
+                message: "Student not found with id " + req.params.id
+            });
+        }
+        res.send(student);
     }).catch(err => {
-        res.status(500).send({
-            message:"Some error occurred while creating the Student."
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Student not found with id " + req.params.id
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating Student with id " + req.params.id
         });
     });
 };
