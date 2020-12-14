@@ -1,7 +1,7 @@
 const Student=require('../model/student')
 
-exports.getById = (req, res) => {
-    Student.findById(req.params.id)
+exports.getByName = (req, res) => {
+    Student.find({name:req.params.name})
 
     .then(data => {
         console.log(data)
