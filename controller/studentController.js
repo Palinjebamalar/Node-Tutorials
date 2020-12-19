@@ -10,23 +10,23 @@ console.log("hai")
     }
 
     //Check Class is Empty or not
-    if(isEmpty(body.class)){
+    else if(isEmpty(body.class)){
         res.status(500).send({message:"Class is required!"});
     }
 
     // Email Validation
-    if(!(isEmail(body.email))){
+    else if(!(isEmail(body.email))){
         res.status(500).send({message:"Valid Email required!"});
     }
      // Phone Validation
-     if(!(isMobilePhone(body.phone))){
+    else if(!(isMobilePhone(body.phone))){
         res.status(500).send({message:"Valid Phone number required!"});
     } 
     //Date Validation
-    if(!(isDate(body.dateofBirth))){
+    else if(!(isDate(body.dateofBirth))){
         res.status(500).send({message:"Date should be in either YYYY/MM/DD or YYYY-MM-DD format!"});
     }
-
+    else{
     Student.create(body)
 
     .then(data => {
@@ -37,4 +37,5 @@ console.log("hai")
             message:"Some error occurred while creating the Student."
         });
     });
+}
 };
