@@ -1,32 +1,32 @@
 const Student=require('../model/student')
-
+var validator = require('validator');
+var {isEmail,isLength,isMobilePhone,isDate,isEmpty}=validator
 exports.create = (req, res) => {
     let body=req.body
-
+console.log("hai")
     //Name should be minimum 3 Characters validation
-    if(body.name.length<3){
-        console.log("hai")
+    if(!(isLength(body.name,{min:3}))){
         res.status(500).send({message:"Name should be minimum 3 Characters"});
     }
 
     //Check Class is Empty or not
-    if(body.class==='' || body.class===undefined){
+    if(isEmpty(body.class)){
         res.status(500).send({message:"Class is required!"});
     }
 
     // Email Validation
-    if(!(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(body.email))){
+    if(!(isEmail(body.email))){
         res.status(500).send({message:"Valid Email required!"});
     }
      // Phone Validation
-     if(!(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test(body.phone))){
+     if(!(isMobilePhone(body.phone))){
         res.status(500).send({message:"Valid Phone number required!"});
     } 
     //Date Validation
-    if(!(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(body.date))){
-        res.status(500).send({message:"Date should be in either DD/MM/YYYY or DD-MM-YYYY format!"});
+    if(!(isDate(body.dateofBirth))){
+        res.status(500).send({message:"Date should be in either YYYY/MM/DD or YYYY-MM-DD format!"});
     }
-    
+
     Student.create(body)
 
     .then(data => {
