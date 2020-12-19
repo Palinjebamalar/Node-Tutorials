@@ -23,7 +23,7 @@ exports.create = (req, res) => {
         res.status(500).send({message:"Valid Phone number required!"});
     } 
     //Date Validation
-    if(!(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(body.date))){
+    if(!(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(body.dateofBirth))){
         res.status(500).send({message:"Date should be in either DD/MM/YYYY or DD-MM-YYYY format!"});
     }
     
