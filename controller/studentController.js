@@ -1,104 +1,55 @@
-const Student=require('../model/student')
+const Student =require('../model/student')
+const { isNull, isEmpty, to, ReE, ReS } = require('../services/util.services')
+const validator = require('validator')
+const { isEmail } = validator
+const HttpStatus = require('http-status')
 
-exports.create = (req, res) => {
-    // Validate request
-    if(!req.body.name) {
-        return res.status(400).send({
-            message: "Name Required"
-        });
+const createStudent = async function (req, res) {
+
+    const body = req.body
+    let err, user
+
+    if (isNull(body.name) || body.name.length < 3) {
+        return ReE(res, 'please enter a name with minimum 3 characters', 400)
+    }
+    else if (isNull(body.Id)) {
+        return ReE(res, 'please enter your class', 400)
+    }
+     else if (isNull(body.class)) {
+        return ReE(res, 'please enter your class', 400)
+    }
+    else if (isNull(body.department)) {
+        return ReE(res, 'please enter your department',
+            400)
+    }
+    else if (isNull(body.age)) {
+        return ReE(res, 'please enter your age',
+            400)
+    } else if (isNull(body.DOB)) {
+        return ReE(res, 'please enter your Date of Birth',
+            400)
     }
 
-    // Create a Note
-
-    Student.create({name:req.body.name,class:req.body.class})
-
-    .then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while creating the Student."
-        });
-    });
-};
-
-exports.findAll = (req, res) => {
-    Student.find()
-    .then(student => {
-        res.send(student);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving Students."
-        });
-    });
-};
-
-exports.findOne = (req, res) => {
-    Student.findById(req.params.id)
-    .then(student => {
-        if(!student) {
-            return res.status(404).send({
-                message: "student not found with id " + req.params.id
-            });            
-        }
-        res.send(student);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "student not found with id " + req.params.id
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving note with id " + req.params.id
-        });
-    });
-};
-
-exports.update = (req, res) => {
-    // Validate Request
-    if(!req.body.name) {
-        return res.status(400).send({
-            message: "Name Required"
-        });
+    [err, user] = await to(Student.findOne({ Id: body.Id }))
+        if (err) return ReE(res, err, 422)
+        
+    if(user){
+        return ReE(res, { message: "Alredy Exist" }, 422)
     }
 
-    // Find note and update it with the request body
-    Student.updateOne({_id:req.params.id}, { name:req.body.name,class:req.body.class})
-    .then(student => {
-        if(!student) {
-            return res.status(404).send({
-                message: "Student not found with id " + req.params.id
-            });
-        }
-        res.send(student);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Student not found with id " + req.params.id
-            });                
-        }
-        return res.status(500).send({
-            message: "Error updating Student with id " + req.params.id
-        });
-    });
-};
+    [err, user] = await to(Student.create(body))
+    if (err) return ReE(res, err, 422)
+    if (!user) {
+        return ReE(res, { message: "you have no access" }, 422)
+    }
+if(user){
+    return ReS(res, {
+        message: 'Account Created',
+        user: user,
 
-exports.delete = (req, res) => {
-    Student.findByIdAndRemove(req.params.id)
-    .then(student => {
-        if(!student) {
-            return res.status(404).send({
-                message: "Student not found with id " + req.params.id
-            });
-        }
-        res.send({message: "Student deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "Student not found with id " + req.params.id
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete student with id " + req.params.id
-        });
-    });
-};
+    }, 201)
+}
+   
+}
+module.exports.createStudent = createStudent
+
