@@ -9,12 +9,18 @@ const register = async function (req, res) {
     const body = req.body
     let err, user
 
-    if (isNull(body.name) || body.name.length < 3) {
+    if (isNull(body.userName) || body.userName.length < 3) {
         return ReE(res, 'please enter a username with minimum 3 characters', 400)
     } else if (isNull(body.email)) {
         return ReE(res, 'please enter your Email Id', 400)
+      } else if (isEmail(body.email)) {
+            return ReE(res, 'please enter valid Email Id', 400)
     } else if (isNull(body.password) || body.password.length < 8) {
         return ReE(res, 'please enter a password with minimum 8 characters',
+            400)
+    }
+    else if (!(isMobilePhone(body.phoneNumber))) {
+        return ReE(res, 'please enter your phone Number',
             400)
     }
 
@@ -34,7 +40,7 @@ if(user){
     return ReS(res, {
         message: 'Account Created',
         user: {
-            name: user.name,
+            userName: user.userName,
             email: user.email
         },
 
@@ -91,3 +97,28 @@ const getUser = async function (req, res) {
     return ReS(res, { user: user.toWeb() })
 }
 module.exports.getUser = getUser
+
+const update = async function (req, res) {
+    let err, user, data
+    user = req.user
+    data = req.body
+
+    CONFIG.editableUserFields.forEach(function (field) {
+        if (typeof field === 'string' && data[field] !== undefined) {
+            user[field] = data[field]
+        }
+    })
+
+
+    [err, user] = await to(user.save())
+    if (err) {
+        return ReE(res, err, 400)
+    }
+    return ReS(res,
+        {
+            message: 'Updated User.',
+            user: user,
+        }, HttpStatus.OK,
+    )
+}
+module.exports.update = update

@@ -8,19 +8,42 @@ const Schema = mongoose.Schema
 
 const UserSchema = new mongoose.Schema({
     email: {
-        type: String, required: true,
-        unique:false
+        type: String,
+        required: true,
+        unique:true
     },
-    name: {
-            type: String,
+    userName: {
+        type: String,
+        required: true,
+        unique:true
     },
     password: {
         type: String,
         required: true,
         minlength: 8,
     },
-        mobile:{
+    userType:{
+        type: String,
+        required: true,
+        enum:CONFIG.userType
+    },
+    firstName:{
+        type: String,
+    },
+    lastName:{
+        type: String,
+
+    },
+    phoneNumber:{
+            type:Number
+        },
+        gender:{
             type:String
+
+        },
+        active:{
+            type:Boolean,
+            default:true
         }
     
 }, {timestamps: true})
