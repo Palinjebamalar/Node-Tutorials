@@ -1,26 +1,31 @@
 const User =require('../model/user')
 const { isNull, isEmpty, to, ReE, ReS } = require('../services/util.services')
 const validator = require('validator')
-const { isEmail } = validator
+const { isEmail ,isMobilePhone} = validator
 const HttpStatus = require('http-status')
+const CONFIG =require('../config/config')
+
 
 const register = async function (req, res) {
 
     const body = req.body
     let err, user
-
+    body.userType="user";
     if (isNull(body.userName) || body.userName.length < 3) {
         return ReE(res, 'please enter a username with minimum 3 characters', 400)
     } else if (isNull(body.email)) {
         return ReE(res, 'please enter your Email Id', 400)
-      } else if (isEmail(body.email)) {
+      } else if (!isEmail(body.email)) {
             return ReE(res, 'please enter valid Email Id', 400)
     } else if (isNull(body.password) || body.password.length < 8) {
         return ReE(res, 'please enter a password with minimum 8 characters',
             400)
     }
-    else if (!(isMobilePhone(body.phoneNumber))) {
-        return ReE(res, 'please enter your phone Number',
+    else if (isNull(body.phoneNumber)) {
+        return ReE(res, 'please enter your phone number', 400)
+      }
+      else if (!(isMobilePhone(body.phoneNumber))) {
+        return ReE(res, 'please enter valid phone Number',
             400)
     }
 
@@ -107,7 +112,7 @@ const update = async function (req, res) {
         if (typeof field === 'string' && data[field] !== undefined) {
             user[field] = data[field]
         }
-    })
+    });
 
 
     [err, user] = await to(user.save())
@@ -122,3 +127,20 @@ const update = async function (req, res) {
     )
 }
 module.exports.update = update
+
+
+const Delete = async function (req, res) {
+    let err, user
+    user = req.user
+    user.active=false;
+    [err, user] = await to(user.save())
+    if (err) {
+        return ReE(res, err, 400)
+    }
+    return ReS(res,
+        {
+            message: 'User Deleted',
+        }, HttpStatus.OK,
+    )
+}
+module.exports.Delete = Delete

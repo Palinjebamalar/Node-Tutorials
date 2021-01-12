@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
 
     },
     phoneNumber:{
-            type:Number
+            type:String
         },
         gender:{
             type:String
@@ -44,6 +44,10 @@ const UserSchema = new mongoose.Schema({
         active:{
             type:Boolean,
             default:true
+        },
+        admin:{
+            type:Boolean,
+            default:false
         }
     
 }, {timestamps: true})
