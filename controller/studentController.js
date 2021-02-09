@@ -1,7 +1,7 @@
 const Student=require('../model/student')
 
 exports.getAll = (req, res) => {
-    Student.find().sort({name: 1})
+    Student.find().sort({name: -1})
 
     .then(data => {
         console.log(data)
